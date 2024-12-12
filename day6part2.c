@@ -16,8 +16,7 @@ Advent of Code 2024, day 6, part 2
 #define DATA_ROWS 130
 #define DATA_COLS 130
 
-// Pre-calulated how many X were in part 1
-#define MAX_PLACES 4722
+#define MAX_MOVES 10000
 
 char g_data[DATA_ROWS][DATA_COLS];
 int g_x, g_y;
@@ -35,7 +34,7 @@ void find_start() {
     }
 }
 
-void add_obstruction(int round) {
+int add_obstruction(int round) {
     for (int row=0; row < DATA_ROWS; row++) {
         for (int col=0; col < DATA_COLS; col++) {
             if (g_data[row][col] == 'O') {
@@ -44,15 +43,17 @@ void add_obstruction(int round) {
             if (g_data[row][col] == 'X') {
                 if(round-- <= 0) {
                     g_data[row][col] = 'O';
-                    return;
+                    return TRUE;
                 }
             }
         }
     }
+    return FALSE;
 }
 
 void turn_right() {
-    g_direction = ++g_direction % 4;
+    g_direction += 1;
+    g_direction %= 4;
 }
 
 int move(int x, int y, int mark) {
@@ -118,8 +119,7 @@ int main() {
 
     one_round(TRUE);
 
-    for (int round=0; round < MAX_PLACES; round++) {
-        add_obstruction(round);
+    for (int round=0; add_obstruction(round); round++) {
         if (!one_round(FALSE)) {
             result++;
         }
